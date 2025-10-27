@@ -40,7 +40,8 @@
     let barcode_buffer = '';
     let last_key_time = Date.now();
     let pending_timer = null;
-    const error_audio   = new Audio('https://raw.githubusercontent.com/lambolyu/kidscheckout/main/error.mp3');
+    const success_audio = new Audio('https://raw.githubusercontent.com/lambolyu/kidscheckout/main/success.mp3');
+    const error_audio = new Audio('https://raw.githubusercontent.com/lambolyu/kidscheckout/main/error.mp3');
 
     success_audio.preload = 'auto';
     error_audio.preload   = 'auto';
@@ -94,6 +95,7 @@
 </script>
 </body>
 </html>
+
 
 
 
