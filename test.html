@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>音效測試器</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { padding: 24px; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  </style>
+</head>
+<body>
+  <h1 class="h4 mb-3">音效測試器（成功／錯誤）</h1>
+
+  <div class="row g-3">
+    <div class="col-12">
+      <label class="form-label">成功音效 URL</label>
+      <input id="success_url" class="form-control mono" type="text"
+        value="https://raw.githubusercontent.com/lambolyu/kidscheckout/main/success.mp3">
+    </div>
+    <div class="col-12">
+      <label class="form-label">錯誤音效 URL</label>
+      <input id="error_url" class="form-control mono" type="text"
+        value="https://raw.githubusercontent.com/lambolyu/kidscheckout/main/error.mp3">
+    </div>
+    <div class="col-12 d-flex gap-2">
+      <button id="reload_btn" class="btn btn-secondary">重新載入音效</button>
+      <div class="ms-auto d-flex align-items-center gap-2">
+        <label for="volume_range" class="form-label mb-0">音量</label>
+        <input id="volume_range" type="range" min="0" max="1" step="0.05" value="1">
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="d-flex gap-2 mb-3">
+    <button id="play_success" class="btn btn-success">播放成功音效</button>
+    <button id="play_error" class="btn btn-danger">播放錯誤音效</button>
+    <button id="play_both" class="btn btn-primary">連續播放（成功→錯誤）</button>
+  </div>
+
+  <div class="small text-muted">
+    <span id="status_success">成功音效：尚未載入</span> ｜ 
+    <span id="status_error">錯誤音效：尚未載入</span>
+  </div>
+
+  <pre id="log" class="mt-3 p-3 bg-light border rounded mono" style="min-height: 96px;"></pre>
+
+  <script>
+    // === 全域音效物件 ===
+    let success_audio = null;
+    let error_audio = null;
+
+    const success_url_input = document.getElementById('success_url');
+    const error_url_input   = document.getElementById('error_url');
+    const status_success    = document.getElementById('status_success');
+    const status_error      = document.getElementById('status_error');
+    const volume_range      = document.getElementById('volume_range');
+    const log_box           = document.getElementById('log');
+
+    function log(msg) {
+      const t = new Date().toLocaleTimeString();
+      log_box.textContent += `[${t}] ${msg}\n`;
+      log_box.scrollTop = log_box.scrollHeight;
+    }
+
+    function bind_audio_events(a, label_el, name) {
+      a.addEventListener('loadstart', () => { label_el.textContent = `${name}：開始載入`; });
+      a.addEventListener('canplay', () => { label_el.textContent = `${name}：可播放`; });
+      a.addEventListener('canplaythrough', () => { label_el.textContent = `${name}：可順暢播放`; });
+      a.addEventListener('error', () => { label_el.textContent = `${name}：載入失敗`; log(`${name} 載入失敗`); });
+      a.addEventListener('ended', () => { log(`${name} 播放結束`); });
+    }
+
+    function init_audios() {
+      const success_url = success_url_input.value.trim();
+      const error_url   = error_url_input.value.trim();
+
+      success_audio = new Audio(success_url);
+      error_audio   = new Audio(error_url);
+
+      success_audio.preload = 'auto';
+      error_audio.preload   = 'auto';
+
+      success_audio.volume = parseFloat(volume_range.value);
+      error_audio.volume   = parseFloat(volume_range.value);
+
+      bind_audio_events(success_audio, status_success, '成功音效');
+      bind_audio_events(error_audio, status_error, '錯誤音效');
+
+      // 觸發瀏覽器開始預載
+      success_audio.load();
+      error_audio.load();
+
+      log('音效已重新建立並開始預載');
+    }
+
+    function safe_play(a, name) {
+      try {
+        a.currentTime = 0;
+        const p = a.play();
+        if (p && typeof p.catch === 'function') {
+          p.then(() => log(`${name} 播放中`))
+           .catch(err => log(`${name} 播放被阻擋或失敗：${err && err.name ? err.name : err}`));
+        }
+      } catch (e) {
+        log(`${name} 播放例外：${e}`);
+      }
+    }
+
+    // === UI 綁定 ===
+    document.getElementById('reload_btn').addEventListener('click', init_audios);
+    document.getElementById('play_success').addEventListener('click', () => safe_play(success_audio, '成功音效'));
+    document.getElementById('play_error').addEventListener('click', () => safe_play(error_audio, '錯誤音效'));
+    document.getElementById('play_both').addEventListener('click', async () => {
+      safe_play(success_audio, '成功音效');
+      // 簡單延遲 400ms 再播錯誤音效（避免同時疊音）
+      setTimeout(() => safe_play(error_audio, '錯誤音效'), 400);
+    });
+
+    volume_range.addEventListener('input', () => {
+      const v = parseFloat(volume_range.value);
+      if (success_audio) success_audio.volume = v;
+      if (error_audio)   error_audio.volume = v;
+    });
+
+    // === 首次載入 ===
+    document.addEventListener('DOMContentLoaded', init_audios);
+  </script>
+</body>
+</html>
