@@ -152,11 +152,11 @@
                 //console.log('掃描到條碼：', code);
                 beep_audio.currentTime = 0;
                 beep_audio.play();            
-                beep_audio.currentTime = 0;
+                beep_audio.currentTime = 0.1;
                 beep_audio.play();
                 setTimeout(() => {
                     processBarcode(code);
-                }, 100);
+                }, 1000);
             });
         }
 
@@ -181,6 +181,7 @@
 </body>
 
 </html>
+
 
 
 
