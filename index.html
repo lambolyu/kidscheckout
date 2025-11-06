@@ -88,8 +88,8 @@
                     document.body.classList.remove('bg-success-subtle');
                     document.getElementById('number-display').textContent = '$' + random_num;
                     document.getElementById('result').innerHTML = '<img src="https://cdn-icons-png.flaticon.com/512/3082/3082049.png" style="width: 250px; height: 250px;" alt="">';
-                    startCamera();
-                }, 5000);
+                    //startCamera();
+                }, 3000);
             } else {
                 error_audio.currentTime = 0;
                 error_audio.play();
@@ -98,7 +98,7 @@
                 setTimeout(function () {
                     document.body.classList.remove('bg-danger-subtle');
                     document.getElementById('result').innerHTML = '<img src="https://cdn-icons-png.flaticon.com/512/3082/3082049.png" style="width: 250px; height: 250px;" alt="">';
-                    startCamera();
+                    //startCamera();
                 }, 1000);
             }
         }
@@ -184,6 +184,7 @@
 </body>
 
 </html>
+
 
 
 
