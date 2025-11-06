@@ -55,7 +55,6 @@
         let pending_timer = null;
         const success_audio = new Audio('https://raw.githubusercontent.com/lambolyu/kidscheckout/main/success.mp3');
         const error_audio = new Audio('https://raw.githubusercontent.com/lambolyu/kidscheckout/main/error.mp3');
-        const beep_audio = new Audio('https://raw.githubusercontent.com/lambolyu/kidscheckout/main/beep.mp3');
 
         success_audio.preload = 'auto';
         error_audio.preload = 'auto';
@@ -150,13 +149,9 @@
                 last_code = code;
                 last_code_time = now;
                 //console.log('掃描到條碼：', code);
-                beep_audio.currentTime = 0;
-                beep_audio.play();            
-                beep_audio.currentTime = 0.1;
-                beep_audio.play();
-                setTimeout(() => {
-                    processBarcode(code);
-                }, 1000);
+
+                processBarcode(code);
+
             });
         }
 
@@ -181,6 +176,7 @@
 </body>
 
 </html>
+
 
 
 
