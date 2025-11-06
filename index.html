@@ -55,6 +55,7 @@
         let pending_timer = null;
         const success_audio = new Audio('https://raw.githubusercontent.com/lambolyu/kidscheckout/main/success.mp3');
         const error_audio = new Audio('https://raw.githubusercontent.com/lambolyu/kidscheckout/main/error.mp3');
+        const beep_audio = new Audio();
 
         success_audio.preload = 'auto';
         error_audio.preload = 'auto';
@@ -103,21 +104,6 @@
             }
         }
 
-        // 鍵盤輸入支援（外接條碼讀取器）
-        document.addEventListener('keydown', function (e) {
-            const now = Date.now();
-            if (now - last_key_time > 100) barcode_buffer = '';
-            last_key_time = now;
-
-            if (e.key === 'Enter') {
-                if (!barcode_buffer) return;
-                processBarcode(barcode_buffer);
-                barcode_buffer = '';
-                return;
-            }
-            if (/^\d$/.test(e.key)) barcode_buffer += e.key;
-        });
-
         // 啟動相機掃描
         function startCamera() {
             Quagga.init({
@@ -164,6 +150,8 @@
                 last_code = code;
                 last_code_time = now;
                 //console.log('掃描到條碼：', code);
+                beep_audio.currentTime = 0;
+                beep_audio.play();
                 processBarcode(code);
             });
         }
@@ -188,6 +176,7 @@
 </body>
 
 </html>
+
 
 
 
