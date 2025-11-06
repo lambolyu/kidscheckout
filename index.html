@@ -62,10 +62,23 @@
         function processBarcode(code) {
             const scanned = parseInt(code.replace(/\D+/g, ''), 10);
             if (isNaN(scanned)) return;
+            if (scanned !== 10 && scanned !== 100 && scanned !== 1000) return;
 
             clearTimeout(pending_timer);
 
-            if (scanned > random_num) {
+            let isValid = false;
+            if (random_num >= 100) {
+                // 三位數：只接受 1000
+                isValid = (scanned === 1000);
+            } else if (random_num >= 10) {
+                // 兩位數：只接受 100
+                isValid = (scanned === 100);
+            } else {
+                // 個位數：只接受 10
+                isValid = (scanned === 10);
+            }
+
+            if (isValid) {
                 success_audio.currentTime = 0;
                 success_audio.play();
                 document.getElementById('result').innerHTML = '<i class="fa-solid fa-circle-check text-success" style="font-size: 250px;"></i>';
@@ -106,31 +119,29 @@
         function startCamera() {
             Quagga.init({
                 inputStream: {
-                    name: "Live",
-                    type: "LiveStream",
+                    name: 'Live',
+                    type: 'LiveStream',
                     target: document.querySelector('#interactive'),
                     constraints: {
                         width: 640,
                         height: 160,
-                        facingMode: "environment"
+                        facingMode: 'environment'
                     },
                 },
                 decoder: {
                     readers: [
-                        "ean_reader",
-                        "ean_8_reader",
-                        "code_128_reader",
-                        "code_39_reader",
-                        "upc_reader",
-                        "upc_e_reader"
+                        'ean_reader',
+                        'ean_8_reader',
+                        'code_128_reader',
+                        'code_39_reader'
                     ]
                 },
             }, function (err) {
                 if (err) {
-                    console.error('相機啟動失敗：', err);
+                    //console.error('相機啟動失敗：', err);
                     return;
                 }
-                console.log('相機已啟動');
+                //console.log('相機已啟動');
                 Quagga.start();
             });
 
