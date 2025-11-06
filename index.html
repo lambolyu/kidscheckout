@@ -13,12 +13,8 @@
         }
 
         #interactive {
-            display: block;
-            width: 100%;
-            aspect-ratio: 10 / 1;
-            overflow: hidden;
-        }
-        
+            display: none;
+        }        
     </style>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
@@ -131,8 +127,7 @@
                     target: document.querySelector('#interactive'),
                     constraints: {
                         width:    { ideal: 1280 },  // 也可 1920
-                        height:   { ideal: 128 },   // 10:1
-                        aspectRatio: 10,
+                        height:   { ideal: 960 },   // 10:1
                         facingMode: 'environment'
                     },
                 },
@@ -143,6 +138,10 @@
                         'code_128_reader',
                         'code_39_reader'
                     ]
+                },
+                locator: { 
+                    patchSize: 'large', 
+                    halfSample: false
                 },
             }, function (err) {
                 if (err) {
@@ -189,6 +188,7 @@
 </body>
 
 </html>
+
 
 
 
