@@ -65,6 +65,8 @@
             if (isNaN(scanned)) return;
             if (scanned !== 10 && scanned !== 100 && scanned !== 1000) return;
 
+            beep_audio.currentTime = 0;
+            beep_audio.play();
             //clearTimeout(pending_timer);
 
             let isValid = false;
@@ -150,8 +152,6 @@
                 last_code = code;
                 last_code_time = now;
                 //console.log('掃描到條碼：', code);
-                beep_audio.currentTime = 0;
-                beep_audio.play();
                 processBarcode(code);
             });
         }
@@ -161,6 +161,7 @@
             // 預載音效
             success_audio.load();
             error_audio.load();
+            beep_audio.load();
 
             // 產生隨機金額
             const r = Math.random();
@@ -176,6 +177,7 @@
 </body>
 
 </html>
+
 
 
 
