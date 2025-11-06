@@ -14,6 +14,18 @@
 
         #interactive {
             display: block;
+            width: 100%;
+            aspect-ratio: 10 / 1;
+            overflow: hidden;
+        }
+        
+        #interactive video,
+        #interactive canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;   /* 填滿外框（會裁切）*/
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
@@ -126,8 +138,9 @@
                     type: 'LiveStream',
                     target: document.querySelector('#interactive'),
                     constraints: {
-                        width: 640,
-                        height: 160,
+                        //width: 640,
+                        //height: 160,
+                        aspectRatio: 10,
                         facingMode: 'environment'
                     },
                 },
@@ -184,6 +197,7 @@
 </body>
 
 </html>
+
 
 
 
